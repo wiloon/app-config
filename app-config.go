@@ -1,10 +1,10 @@
 package config
 
 import (
-	"wiloon.com/golang-x/config/system"
 	"log"
 	"github.com/go-akka/configuration"
 	"path/filepath"
+	"os"
 )
 
 const SYS_ENV_KEY_APP_CONFIG = "app_config"
@@ -18,7 +18,7 @@ func GetString(key string) string {
 func GetStringWithDefaultValue(key string, defaultValue string) string {
 	var value string
 
-	appConfigPath := system.GetSystemEnv(SYS_ENV_KEY_APP_CONFIG)
+	appConfigPath := os.Getenv(SYS_ENV_KEY_APP_CONFIG)
 	if appConfigPath != "" {
 		fullPath := filepath.Join(appConfigPath, DEFAULT_FILE_NAME)
 		log.Println("app config full path:", fullPath)
