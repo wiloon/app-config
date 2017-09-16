@@ -25,7 +25,7 @@ func GetStringWithDefaultValue(key string, defaultValue string) string {
 
 		conf := configuration.LoadConfig(fullPath)
 		value := conf.GetString(key);
-		log.Println("key:%s, value:%s", key, value)
+		log.Printf("key: %s, value: %s", key, value)
 	} else {
 		log.Fatalf("sys env '%s' not found", SYS_ENV_KEY_APP_CONFIG)
 	}
