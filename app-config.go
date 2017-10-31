@@ -7,8 +7,8 @@ import (
 	"os"
 )
 
-const SYS_ENV_KEY_APP_CONFIG = "app_config"
-const DEFAULT_FILE_NAME = "app.config"
+const sysEnvKeyAppConfig = "app_conf"
+const defaultFileName = "app.conf"
 
 func GetString(key string) string {
 	return GetStringWithDefaultValue(key, "")
@@ -18,16 +18,21 @@ func GetString(key string) string {
 func GetStringWithDefaultValue(key string, defaultValue string) string {
 	var value string
 
-	appConfigPath := os.Getenv(SYS_ENV_KEY_APP_CONFIG)
-	if appConfigPath != "" {
-		fullPath := filepath.Join(appConfigPath, DEFAULT_FILE_NAME)
-		log.Println("app config full path:", fullPath)
+	appConfigPath := os.Getenv(sysEnvKeyAppConfig)
 
+	var fullPath string
+	if appConfigPath == "" {
+		log.Printf("sys env key '%s' not found", sysEnvKeyAppConfig)
+	}
+	fullPath = filepath.Join(appConfigPath, defaultFileName)
+
+	log.Println("app config full path:", fullPath)
+	if isFileExist(fullPath) {
 		conf := configuration.LoadConfig(fullPath)
 		value := conf.GetString(key);
 		log.Printf("key: %s, value: %s", key, value)
 	} else {
-		log.Fatalf("sys env '%s' not found", SYS_ENV_KEY_APP_CONFIG)
+		log.Printf("config file '%s' not found", fullPath)
 	}
 
 	if value == "" {
@@ -35,4 +40,9 @@ func GetStringWithDefaultValue(key string, defaultValue string) string {
 	}
 	return value
 
+}
+
+func isFileExist(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil || os.IsExist(err)
 }
