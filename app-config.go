@@ -19,7 +19,11 @@ func GetInt(key string) int {
 	return GetIntWithDefaultValue(key, -1)
 }
 
-func GetStringWithDefaultValue(key string, defaultValue string) string {
+func GetBool(key string) bool {
+	return GetBoolWithDefaultValue(key, false)
+}
+
+func GetStringWithDefaultValue(key string, def string) string {
 	var value string
 
 	appConfigPath := os.Getenv(sysEnvKeyAppConfig)
@@ -38,12 +42,12 @@ func GetStringWithDefaultValue(key string, defaultValue string) string {
 	}
 
 	if value == "" {
-		value = defaultValue
+		value = def
 	}
 	return value
 }
 
-func GetIntWithDefaultValue(key string, defaultValue int) int {
+func GetIntWithDefaultValue(key string, def int) int {
 	var value string
 
 	appConfigPath := os.Getenv(sysEnvKeyAppConfig)
@@ -63,9 +67,37 @@ func GetIntWithDefaultValue(key string, defaultValue int) int {
 
 	var result int
 	if value == "" {
-		result = defaultValue
+		result = def
 	} else {
 		intValue, _ := strconv.Atoi(value)
+		result = intValue
+	}
+	return result
+}
+
+func GetBoolWithDefaultValue(key string, def bool) bool {
+	var value string
+
+	appConfigPath := os.Getenv(sysEnvKeyAppConfig)
+
+	var fullPath string
+	if appConfigPath == "" {
+		log.Printf("sys env key '%s' not found", sysEnvKeyAppConfig)
+	}
+	fullPath = filepath.Join(appConfigPath, defaultFileName)
+	if isFileExist(fullPath) {
+		conf := configuration.LoadConfig(fullPath)
+		value = conf.GetString(key);
+		log.Printf("key: %s, value: %s", key, value)
+	} else {
+		log.Printf("config file '%s' not found", fullPath)
+	}
+
+	var result bool
+	if value == "" {
+		result = def
+	} else {
+		intValue, _ := strconv.ParseBool(value)
 		result = intValue
 	}
 	return result

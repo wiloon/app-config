@@ -20,3 +20,9 @@ func TestAppConfigWithDefaultValue(t *testing.T) {
 	log.Println(GetStringWithDefaultValue("k1", ""))
 
 }
+
+func TestAppConfigBool(t *testing.T) {
+	log.Println("result:", GetBool("k10"))
+	log.Println("result:", GetBoolWithDefaultValue("k11", true))
+
+}
