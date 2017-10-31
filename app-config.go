@@ -25,8 +25,6 @@ func GetStringWithDefaultValue(key string, defaultValue string) string {
 		log.Printf("sys env key '%s' not found", sysEnvKeyAppConfig)
 	}
 	fullPath = filepath.Join(appConfigPath, defaultFileName)
-
-	log.Println("app config full path:", fullPath)
 	if isFileExist(fullPath) {
 		conf := configuration.LoadConfig(fullPath)
 		value := conf.GetString(key);
@@ -44,5 +42,8 @@ func GetStringWithDefaultValue(key string, defaultValue string) string {
 
 func isFileExist(filename string) bool {
 	_, err := os.Stat(filename)
-	return err == nil || os.IsExist(err)
+	fileExist := err == nil || os.IsExist(err)
+	currentPath, _ := os.Getwd()
+	log.Printf("file: %s, exist:%v", currentPath+string(os.PathSeparator)+filename, fileExist)
+	return fileExist
 }
