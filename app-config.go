@@ -55,6 +55,10 @@ func GetBool(key string) bool {
 	return GetBoolWithDefaultValue(key, false)
 }
 
+func GetStringList(key string) []string {
+	return conf.GetStringList(key)
+}
+
 func GetStringWithDefaultValue(key string, def string) string {
 	var value string
 
