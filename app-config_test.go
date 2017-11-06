@@ -3,11 +3,9 @@ package config
 import (
 	"testing"
 	"log"
-
 )
 
 func TestAppConfig(t *testing.T) {
-
 	log.Println(GetString("k0"))
 }
 
@@ -26,4 +24,9 @@ func TestAppConfigBool(t *testing.T) {
 	log.Println("result:", GetBool("k10"))
 	log.Println("result:", GetBoolWithDefaultValue("k11", true))
 
+}
+
+func TestAppConfigTest(t *testing.T) {
+	LoadLocalConfig("test.conf")
+	log.Println(GetString("k0"))
 }

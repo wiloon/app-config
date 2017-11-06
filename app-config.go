@@ -10,12 +10,18 @@ import (
 )
 
 const sysEnvKeyAppConfig = "app_conf"
-const defaultFileName = "app.conf"
+
+var defaultFileName = "app.conf"
 
 var configFilePath string
 var conf *configuration.Config
 
 func init() {
+	LoadLocalConfig(defaultFileName)
+}
+func LoadLocalConfig(configFileName string) {
+	defaultFileName = configFileName
+
 	configFilePath = configPath()
 	if !isFileExist(configFilePath) {
 		log.Fatal("conifg file not found:", configFilePath)
@@ -23,7 +29,6 @@ func init() {
 	}
 	conf = configuration.LoadConfig(configFilePath)
 }
-
 func configPath() string {
 	configPath := os.Getenv(sysEnvKeyAppConfig)
 	if strings.EqualFold(configPath, "") || !isFileExist(getConfigFilePath(configPath)) {
