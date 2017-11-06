@@ -7,6 +7,7 @@ import (
 )
 
 func TestAppConfig(t *testing.T) {
+	InitConfig()
 	fmt.Println(GetString("k0"))
 }
 
