@@ -15,7 +15,7 @@ const defaultFileName = "app.conf"
 var configFilePath string
 var conf *configuration.Config
 
-func InitConfig() {
+func init() {
 	configFilePath = configPath()
 	if !isFileExist(configFilePath) {
 		log.Fatal("conifg file not found:", configFilePath)
@@ -69,11 +69,10 @@ func GetStringWithDefaultValue(key string, def string) string {
 
 func GetIntWithDefaultValue(key string, def int) int {
 	var value string
-
-	conf = configuration.LoadConfig(configFilePath)
 	value = conf.GetString(key);
 	log.Printf("key: %s, value: %s", key, value)
 
+	value = conf.GetString(key);
 	var result int
 	if value == "" {
 		result = def
@@ -86,10 +85,9 @@ func GetIntWithDefaultValue(key string, def int) int {
 
 func GetBoolWithDefaultValue(key string, def bool) bool {
 	var value string
-
-	conf = configuration.LoadConfig(configFilePath)
-
 	var result bool
+
+	value = conf.GetString(key);
 	if value == "" {
 		result = def
 	} else {
