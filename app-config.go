@@ -10,6 +10,7 @@ import (
 )
 
 const sysEnvKeyAppConfig = "app_conf"
+const KeyProjectName = "project.name"
 
 var defaultFileName = "app.conf"
 
