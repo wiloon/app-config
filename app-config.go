@@ -48,10 +48,6 @@ func getConfigFilePath(configPath string) string {
 	return filepath.Join(configPath, defaultFileName)
 }
 
-func GetString(key string) string {
-	return GetStringWithDefaultValue(key, "")
-}
-
 func GetInt(key string) int {
 	return GetIntWithDefaultValue(key, -1)
 }
@@ -64,7 +60,7 @@ func GetStringList(key string) []string {
 	return conf.GetStringList(key)
 }
 
-func GetStringWithDefaultValue(key string, def string) string {
+func GetString(key string, def string) string {
 	var value string
 
 	value = conf.GetString(key);
