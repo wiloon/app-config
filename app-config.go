@@ -10,12 +10,7 @@ import (
 const SYS_ENV_KEY_APP_CONFIG = "app_config"
 const DEFAULT_FILE_NAME = "app.config"
 
-func GetString(key string) string {
-	return GetStringWithDefaultValue(key, "")
-
-}
-
-func GetStringWithDefaultValue(key string, defaultValue string) string {
+func GetString(key string, defaultValue string) string {
 	var value string
 
 	appConfigPath := os.Getenv(SYS_ENV_KEY_APP_CONFIG)
