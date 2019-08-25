@@ -1,21 +1,23 @@
 package config
 
 import (
-	"log"
-	"github.com/go-akka/configuration"
-	"path/filepath"
+	"fmt"
+	"github.com/pelletier/go-toml"
+	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
 
-const sysEnvKeyAppConfig = "app_conf"
+const sysEnvKeyAppConfig = "app_config"
 const KeyProjectName = "project.name"
 
-var defaultFileName = "app.conf"
+var defaultFileName = "config.toml"
 
 var configFilePath string
-var conf *configuration.Config
+var conf *toml.Tree
 
 func init() {
 	LoadLocalConfig(defaultFileName)
@@ -25,15 +27,23 @@ func LoadLocalConfig(configFileName string) {
 
 	configFilePath = configPath()
 	if !isFileExist(configFilePath) {
-		log.Fatal("conifg file not found:", configFilePath)
-		//os.Exit(0)
+		log.Error("conifg file not found:", configFilePath)
+		return
 	}
-	conf = configuration.LoadConfig(configFilePath)
+
+	b, err := ioutil.ReadFile(configFilePath)
+	if err != nil {
+		fmt.Print(err)
+	}
+	str := string(b)
+	log.Infof("config file content: %v", str)
+
+	conf, _ = toml.Load(str)
 }
 func configPath() string {
 	configPath := os.Getenv(sysEnvKeyAppConfig)
 	if strings.EqualFold(configPath, "") || !isFileExist(getConfigFilePath(configPath)) {
-		log.Printf("config file not found, sys env key:%v, value:%v", sysEnvKeyAppConfig, configPath)
+		log.Warnf("system env key not found, key: %v", sysEnvKeyAppConfig)
 
 		configPath = execPath()
 		if strings.EqualFold(configPath, "") || !isFileExist(getConfigFilePath(configPath)) {
@@ -49,51 +59,51 @@ func getConfigFilePath(configPath string) string {
 	return filepath.Join(configPath, defaultFileName)
 }
 
-func GetInt(key string) int {
-	return GetIntWithDefaultValue(key, -1)
+func GetInt(key string) int64 {
+	var foo int64
+	foo = -1
+	return GetIntWithDefaultValue(key, foo)
 }
 
 func GetBool(key string) bool {
 	return GetBoolWithDefaultValue(key, false)
 }
 
-func GetStringList(key string) []string {
-	return conf.GetStringList(key)
-}
+//func GetStringList(key string) []string {
+//	return conf.Get(key).(string)
+//}
 
 func GetString(key string, def string) string {
 	var value string
+	if conf == nil {
+		value = def
+	} else {
+		obj := conf.Get(key)
+		if obj == nil {
+			value = def
+		} else {
+			value = obj.(string)
+		}
+	}
 
-	value = conf.GetString(key);
 	log.Printf("key: %s, value: %s", key, value)
 
-	if value == "" {
-		value = def
-	}
 	return value
 }
 
-func GetIntWithDefaultValue(key string, def int) int {
-	var value string
-	value = conf.GetString(key);
-	log.Printf("key: %s, value: %s", key, value)
+func GetIntWithDefaultValue(key string, def int64) int64 {
+	var value int64
+	value = conf.Get(key).(int64)
+	log.Printf("key: %s, value: %v", key, value)
 
-	value = conf.GetString(key);
-	var result int
-	if value == "" {
-		result = def
-	} else {
-		intValue, _ := strconv.Atoi(value)
-		result = intValue
-	}
-	return result
+	return value
 }
 
 func GetBoolWithDefaultValue(key string, def bool) bool {
 	var value string
 	var result bool
 
-	value = conf.GetString(key);
+	value = conf.Get(key).(string)
 	if value == "" {
 		result = def
 	} else {
