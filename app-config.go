@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
 
@@ -23,6 +22,7 @@ func init() {
 	LoadLocalConfig(defaultFileName)
 }
 func LoadLocalConfig(configFileName string) {
+	log.Info("loading config file")
 	defaultFileName = configFileName
 
 	configFilePath = configPath()
@@ -93,22 +93,25 @@ func GetString(key string, def string) string {
 
 func GetIntWithDefaultValue(key string, def int64) int64 {
 	var value int64
-	value = conf.Get(key).(int64)
+	k := conf.Get(key)
+	if k == nil {
+		value = def
+	} else {
+		value = k.(int64)
+	}
+
 	log.Printf("key: %s, value: %v", key, value)
 
 	return value
 }
 
 func GetBoolWithDefaultValue(key string, def bool) bool {
-	var value string
 	var result bool
-
-	value = conf.Get(key).(string)
-	if value == "" {
+	obj := conf.Get(key)
+	if obj == nil {
 		result = def
 	} else {
-		intValue, _ := strconv.ParseBool(value)
-		result = intValue
+		result = obj.(bool)
 	}
 	return result
 }
