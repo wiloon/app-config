@@ -1,4 +1,8 @@
-toml config, app config reader
+toml config file, app config reader
+
+### 查找顺序
+- /tmp/config.toml
+
 
 ```go
 import "github.com/wiloon/pingd-config"

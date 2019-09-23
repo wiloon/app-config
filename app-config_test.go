@@ -9,7 +9,13 @@ import (
 	"testing"
 )
 
-func TestAppConfig(t *testing.T) {
+func TestAppConfigBool(t *testing.T) {
+	foo := GetBool("rssx.dev-mode")
+	fmt.Println(foo)
+
+}
+
+func TestAppConfigString(t *testing.T) {
 	log.Println("group0.k0: " + GetString("group0.k0", ""))
 }
 
@@ -22,11 +28,11 @@ func TestAppConfigWithDefaultValue(t *testing.T) {
 	log.Println(GetString("k0", ""))
 }
 
-func TestAppConfigBool(t *testing.T) {
-	log.Println("result:", GetBool("k10"))
-	log.Println("result:", GetBoolWithDefaultValue("k11", true))
-
-}
+//func TestAppConfigBool(t *testing.T) {
+//	log.Println("result:", GetBool("k10"))
+//	log.Println("result:", GetBoolWithDefaultValue("k11", true))
+//
+//}
 
 func TestAppConfigTest(t *testing.T) {
 	LoadLocalConfig("test.conf")
