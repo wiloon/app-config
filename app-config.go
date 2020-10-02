@@ -3,8 +3,8 @@ package config
 import (
 	"fmt"
 	"github.com/pelletier/go-toml"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,12 +22,12 @@ func init() {
 	LoadLocalConfig(defaultFileName)
 }
 func LoadLocalConfig(configFileName string) {
-	log.Info("loading config file")
+	log.Println("loading config file")
 	defaultFileName = configFileName
 
 	configFilePath = configPath()
 	if !isFileExist(configFilePath) {
-		log.Error("conifg file not found:", configFilePath)
+		log.Println("conifg file not found:", configFilePath)
 		return
 	}
 
@@ -36,14 +36,14 @@ func LoadLocalConfig(configFileName string) {
 		fmt.Print(err)
 	}
 	str := string(b)
-	log.Infof("config file content: %v", str)
+	log.Printf("config file content: %v", str)
 
 	conf, _ = toml.Load(str)
 }
 func configPath() string {
 	configPath := os.Getenv(sysEnvKeyAppConfig)
 	if strings.EqualFold(configPath, "") || !isFileExist(getConfigFilePath(configPath)) {
-		log.Warnf("system env key not found, key: %v", sysEnvKeyAppConfig)
+		log.Printf("system env key not found, key: %v", sysEnvKeyAppConfig)
 
 		configPath = execPath()
 		if strings.EqualFold(configPath, "") || !isFileExist(getConfigFilePath(configPath)) {
